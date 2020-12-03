@@ -31,9 +31,14 @@
         </router-link>
       </h1>
       <div class="searchArea">
-        <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" />
-          <button class="sui-btn btn-xlarge btn-danger" type="button" @click="search">搜索</button>
+        <form class="searchForm" @submit.prevent="search">
+          <input
+            type="text"
+            id="autocomplete"
+            class="input-error input-xxlarge"
+            v-model="searchText"
+          />
+          <button class="sui-btn btn-xlarge btn-danger">搜索</button>
         </form>
       </div>
     </div>
@@ -43,9 +48,42 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      //搜索内容
+      searchText: "",
+    };
+  },
   methods: {
+    /**
+     * 搜索功能函数
+     */
+    //第一种写法
+    // search() {
+    //   const { searchText } = this;
+    //   const params = searchText ? `/${searchText}` : "";
+    //   const loaction = `/search` + params;
+    //   this.$router.push(loaction);
+    // },
+
+    //第二种写法
     search() {
-      this.$router.push("/search");
+      const { searchText } = this;
+      // this.$router.push({
+      //   name: "search",
+      //   params: {
+      //     searchText,
+      //   },
+      // });
+      const location = {
+        name: "search",
+      };
+      if (searchText) {
+        location.params = {
+          searchText,
+        };
+      }
+      this.$router.push(location);
     },
   },
 };

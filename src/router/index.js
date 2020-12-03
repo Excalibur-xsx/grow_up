@@ -1,6 +1,23 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
+const push = VueRouter.prototype.push;
+const replace = VueRouter.prototype.replace;
+
+VueRouter.prototype.push = function (location, onComplete, onAbort) {
+    if (onComplete && onAbort) {
+        return push.call(this, location, onComplete, onAbort);
+    }
+    return push.call(this, location, onComplete, () => { });
+}
+
+VueRouter.prototype.replace = function (location, onComplete, onAbort) {
+    if (onComplete && onAbort) {
+        return replace.call(this, location, onComplete, onAbort);
+    }
+    return replace.call(this, location, onComplete, () => { });
+}
+
 Vue.use(VueRouter);
 
 import Home from "../views/Home"
@@ -16,14 +33,21 @@ export default new VueRouter({
         },
         {
             path: "/login",
-            component: Login
+            component: Login,
+            meta: {
+                isFooterShow: true,
+            }
         },
         {
             path: "/register",
-            component: Register
+            component: Register,
+            meta: {
+                isFooterShow: true,
+            }
         },
         {
-            path: "/search",
+            name: "search",
+            path: "/search/:searchText?",
             component: Search
         },
     ]
